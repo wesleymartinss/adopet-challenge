@@ -20,10 +20,12 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::post('/user', 'UserController@store');
 Route::post('/login', 'SessionController@login');
+Route::delete('/logout', 'SessionController@logout');
+Route::post('/refresh', 'SessionController@refresh');
+Route::get('/profile', 'SessionController@profile');
 
-
-Route::fallback(function(){
+Route::fallback(function () {
     return response()->json([
-        'message' => 'Route not found'], 404);
+        'message' => 'Route not found'
+    ], 404);
 });
-
