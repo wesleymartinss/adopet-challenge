@@ -1,0 +1,35 @@
+version: "3.5"
+
+services:
+  app:
+    build:
+      context: "."
+      args:
+        uid: 1000
+    container_name: adopet
+    ports:
+      - 8000:80
+    depends_on:
+      - "db"
+    environment:
+      - APACHE_RUN_USER=#1000
+      - APACHE_RUN_GROUP=#1000
+    volumes:
+      - .:/var/www/html
+    networks:
+      backend:
+        aliases:
+          - app
+  db:
+    image: postgres
+    environment:
+      POSTGRES_PASSWORD: "Postgres@123"
+      POSTGRES_DB: adopet
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./data:/var/lib/postgresql/data
+    networks:
+      - backend
+networks:
+  backend:
