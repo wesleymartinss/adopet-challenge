@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use App\User;
 use Validator;
 use App\Http\Requests\StoreUserRequest;
+use App\Http\Requests\ShowUserRequest;
+
+
 
 class UserController extends Controller
 {
@@ -18,20 +21,8 @@ class UserController extends Controller
     {
         //
         $users = User::all();
-
         return response()->json($users);
     }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
     /**
      * Store a newly created resource in storage.
      *
@@ -40,27 +31,27 @@ class UserController extends Controller
      */
     public function store(StoreUserRequest $request)
     {
-        //
         $user = User::create(array_merge(
-                    $request->all(),
+                    $request->validated(),
                     ['password' => bcrypt($request->password)]
                 ));
-
         return response()->json([
             'message' => 'Successfully registered',
-            'user' => $user
+            'id' => $user->id
         ], 201);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
+    public function show(Request $request)
     {
-        //
+        $UUIDv4 = '/^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i';
+        if(preg_match($UUIDv4, $request->header('x-user-id'))){
+            $user = User::find($request->header('x-user-id'));
+            return response()->json($user);
+        }else{
+            return response()->json(['message' => 'UUID not valid'], 400);
+        }
+
+
     }
 
     /**
