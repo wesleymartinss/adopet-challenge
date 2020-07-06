@@ -19,9 +19,12 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::post('/user', 'UserController@store');
+Route::get('/user', 'UserController@show');
+route::post('/product', 'ProductController@store');
+route::get('/products', 'ProductController@index');
 Route::post('/login', 'SessionController@login');
 Route::delete('/logout', 'SessionController@logout');
-Route::post('/refresh', 'SessionController@refresh');
+Route::get('/refresh', 'SessionController@refresh');
 Route::get('/profile', 'SessionController@profile');
 
 Route::fallback(function () {
