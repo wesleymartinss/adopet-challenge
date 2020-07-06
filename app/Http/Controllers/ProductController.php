@@ -6,17 +6,15 @@ use App\Product;
 use Illuminate\Http\Request;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
+use Spatie\QueryBuilder\QueryBuilder;
+use Spatie\QueryBuilder\AllowedFilter;
+use Spatie\QueryBuilder\Exceptions\InvalidFilterQuery;
+use Spatie\QueryBuilder\Exceptions\InvalidSortQuery;
 
 class ProductController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index(Request $request)
     {
-        //
         $paginate = $request->header('paginate') ?? 5;
         $products = Product::paginate($paginate);
         return response()->json($products);
@@ -43,12 +41,11 @@ class ProductController extends Controller
         $product = Product::create($request->validated());
         return response()->json([
             'message' => 'Successfully registered',
-            'id' => $product->id
-        ], 201);
+            'id' => $product->id], 201);
     }
 
 
-    public function show(Request $product)
+    public function show(Request $request)
     {
         $UUIDv4 = '/^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i';
         if(preg_match($UUIDv4, $request->header('x-user-id'))){
@@ -91,5 +88,35 @@ class ProductController extends Controller
         }else{
             return response()->json(['message' => 'UUID not valid'], 400);
         }
+    }
+
+    public function list(Request $request){
+        try {
+            $paginate = $request->header('paginate') ?? 5;
+            $products = QueryBuilder::for(Product::class)->allowedFilters([
+                AllowedFilter::exact('name'),
+                AllowedFilter::exact('description'),
+                AllowedFilter::exact('categorie'),
+                AllowedFilter::exact('price'),
+                AllowedFilter::exact('stock_quantity'),
+                AllowedFilter::scope('min_price'),
+                AllowedFilter::scope('max_price'),
+            ])->allowedSorts('name','description','categorie','price','stock_quantity')
+            ->paginate($paginate);
+            return response()->json($products);
+        }catch (InvalidFilterQuery $exception) {
+            return response()->json([
+                'message' => 'Requested filter are not allowed',
+                'error_filter' => $exception->unknownFilters,
+                'available_filter'=> $exception->allowedFilters
+            ], 400);
+        }catch (InvalidSortQuery $exception) {
+            return response()->json([
+                'message' => 'Requested sort are not allowed',
+                'error_sort'=> $exception->unknownSorts,
+                'available_sort'=> $exception->allowedSorts
+            ], 400);
+        }
+
     }
 }

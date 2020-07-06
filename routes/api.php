@@ -25,6 +25,8 @@ route::get('/products', 'ProductController@index');
 Route::post('/product', 'ProductController@store');
 Route::put('/product', 'ProductController@update');
 Route::delete('/product', 'ProductController@destroy');
+
+Route::get('/products/filter', 'ProductController@list');
 Route::post('/login', 'SessionController@login');
 Route::delete('/logout', 'SessionController@logout');
 Route::get('/refresh', 'SessionController@refresh');
