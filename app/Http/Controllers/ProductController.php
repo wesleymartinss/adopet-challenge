@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Product;
 use Illuminate\Http\Request;
 use App\Http\Requests\StoreProductRequest;
+use App\Http\Requests\UpdateProductRequest;
 
 class ProductController extends Controller
 {
@@ -46,38 +47,29 @@ class ProductController extends Controller
         ], 201);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Product  $product
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Product $product)
+
+    public function show(Request $product)
     {
-        //
+        $UUIDv4 = '/^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i';
+        if(preg_match($UUIDv4, $request->header('x-user-id'))){
+            $product = Product::find($request->header('x-user-id'));
+            return response()->json($product);
+        }else{
+            return response()->json(['message' => 'UUID not valid'], 400);
+        }
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Product  $product
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Product $product)
+    public function update(UpdateProductRequest $request)
     {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Product  $product
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Product $product)
-    {
-        //
+        $product = Product::find($request->validated()['id']);
+        if(!isset($product)){
+            return response()->json(['message' => 'Passed product doenst exist, any resource was updated'], 400);
+        }
+        $product->update($request->validated());
+        return response()->json([
+            'message' => 'Successfully updated',
+            'id' => $product->id
+        ], 201);
     }
 
     /**
@@ -86,8 +78,18 @@ class ProductController extends Controller
      * @param  \App\Product  $product
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Product $product)
+    public function destroy(Request $request)
     {
-        //
+        $UUIDv4 = '/^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i';
+        if(preg_match($UUIDv4, $request->header('x-product-id'))){
+            $product = Product::find($request->header('x-product-id'));
+            if(!isset($product)){
+                return response()->json(['message' => 'Passed product doenst exist, any resource was deleted'], 400);
+            }
+            $product->delete();
+            return response()->json(['message' => 'Successfully deleted'], 204);
+        }else{
+            return response()->json(['message' => 'UUID not valid'], 400);
+        }
     }
 }
