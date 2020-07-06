@@ -23,7 +23,7 @@ services:
   db:
     image: postgres
     environment:
-      POSTGRES_PASSWORD: "Postgres@123"
+      POSTGRES_PASSWORD: "Adopet@123"
       POSTGRES_DB: adopet
     ports:
       - "5432:5432"
