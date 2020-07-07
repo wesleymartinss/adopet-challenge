@@ -255,7 +255,7 @@ Exemplo
 }
 ```
 
-`GET api/product` - Pegando um produto por id junto fazendo uma chamada ao `discount-service` quando for enviado o header x-user-id
+`GET api/product` - Pegando um produto quando for enviado o header x-user-id
 
 Exemplo
 
