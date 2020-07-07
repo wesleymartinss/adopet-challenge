@@ -57,7 +57,20 @@ Caso ocorra algum erro de validação, as informações de validação podem ser
   }
 }
 ```
+`GET api/user` - Pegando um usuario quando for enviado o header x-user-id
 
+Exemplo
+
+```
+
+{
+  "id": "45827d7e-22db-4e4b-88f8-84e14f170b41",
+  "name": "Jonathan",
+  "email": "Laurence.Stanbury.78@yahoo.co.in",
+  "created_at": "1980-09-30T08:32:10.000000Z",
+  "updated_at": "2019-10-13T03:07:11.000000Z"
+}
+```
 `POST api/login` - Criação de um novo Token de autenticação
 
 Exemplo:
@@ -255,7 +268,7 @@ Exemplo
 }
 ```
 
-`GET api/product` - Pegando um produto quando for enviado o header x-user-id
+`GET api/product` - Pegando um produto quando for enviado o header x-product-id
 
 Exemplo
 
