@@ -50,6 +50,10 @@ class UserController extends Controller
     {
         if(Pattern::verifyValidUUID($request->header('x-user-id'))){
             $user = User::find($request->header('x-user-id'));
+            if(!isset($product)){
+                Log::info("User requested user UUID".$request->header('x-user-id')." doenst exist");
+                return response()->json(['message' => 'Passed user doenst exist, any resource was found'], 400);
+            }
             Log::info("Displayed a user ID".$user->id);
             return response()->json($user);
         }else{
