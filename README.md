@@ -14,6 +14,7 @@ O projeto está dividido entre Backend e Banco de Dados. Foi utilizado o Framewo
 
 `git clone https://github.com/wesleymartinss/adopet-challenge.git` para clonar o repositório em sua máquina.
 `docker-compose up --build` inicia todos os serviços e os banco de dados (inserindo alguns produtos e usuários).
+<Senha padrão para todos os usuários que já existem no banco é 1234567>
 
 # Endpoints User
 
@@ -97,7 +98,7 @@ Retorno esperado:
 
 Exemplo:
 
-Deve ser informado um token no header da requisicao como
+Deve ser informado um token no header da requisicao como 
 
 Header -------Value
 Authorization Bearer <tokenaqui>
