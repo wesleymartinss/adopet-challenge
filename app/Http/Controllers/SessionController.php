@@ -32,11 +32,6 @@ class SessionController extends Controller
         return $this->createNewToken($token);
     }
 
-    public function profile()
-    {
-        return response()->json(auth()->user());
-    }
-
     public function logout()
     {
         Log::info("User " . Auth::user()->email . " logged out");

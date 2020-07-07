@@ -7,7 +7,6 @@ services:
       args:
         uid: 1000
     container_name: adopet
-    command: bundle exec thin -p 3000
     ports:
       - 80:80
     depends_on:

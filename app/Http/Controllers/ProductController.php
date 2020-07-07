@@ -10,6 +10,7 @@ use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\Exceptions\InvalidFilterQuery;
 use Spatie\QueryBuilder\Exceptions\InvalidSortQuery;
+use App\Util\Pattern;
 
 class ProductController extends Controller
 {
@@ -17,17 +18,8 @@ class ProductController extends Controller
     {
         $paginate = $request->header('paginate') ?? 5;
         $products = Product::paginate($paginate);
+        Log::info("User requested all products with paginate".$paginate);
         return response()->json($products);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
     }
 
     /**
@@ -39,6 +31,7 @@ class ProductController extends Controller
     public function store(StoreProductRequest $request)
     {
         $product = Product::create($request->validated());
+        Log::info("User stored a new product with ID".$product->id);
         return response()->json([
             'message' => 'Successfully registered',
             'id' => $product->id], 201);
@@ -47,11 +40,12 @@ class ProductController extends Controller
 
     public function show(Request $request)
     {
-        $UUIDv4 = '/^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i';
-        if(preg_match($UUIDv4, $request->header('x-user-id'))){
+        if(Pattern::verifyValidUUID($request->header('x-user-id'))){
             $product = Product::find($request->header('x-user-id'));
+            Log::info("User resquested a product with ID".$product->id);
             return response()->json($product);
         }else{
+            Log::info("User requested a product with invalid UUID, bad request");
             return response()->json(['message' => 'UUID not valid'], 400);
         }
     }
@@ -60,9 +54,11 @@ class ProductController extends Controller
     {
         $product = Product::find($request->validated()['id']);
         if(!isset($product)){
+            Log::info("User requested product UUID".$request->validated()['id']." doenst exist");
             return response()->json(['message' => 'Passed product doenst exist, any resource was updated'], 400);
         }
         $product->update($request->validated());
+        Log::info("User updated product with UUID".$product->id);
         return response()->json([
             'message' => 'Successfully updated',
             'id' => $product->id
@@ -77,15 +73,17 @@ class ProductController extends Controller
      */
     public function destroy(Request $request)
     {
-        $UUIDv4 = '/^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i';
-        if(preg_match($UUIDv4, $request->header('x-product-id'))){
+        if(Pattern::verifyValidUUID($request->header('x-user-id'))){
             $product = Product::find($request->header('x-product-id'));
             if(!isset($product)){
+                Log::info("User requested product UUID".$request->validated()['id']." doenst exist");
                 return response()->json(['message' => 'Passed product doenst exist, any resource was deleted'], 400);
             }
             $product->delete();
+            Log::info("User deleted product with UUID".$product->id);
             return response()->json(['message' => 'Successfully deleted'], 204);
         }else{
+            Log::info("User requested a product with invalid UUID, bad request");
             return response()->json(['message' => 'UUID not valid'], 400);
         }
     }
@@ -103,14 +101,17 @@ class ProductController extends Controller
                 AllowedFilter::scope('max_price'),
             ])->allowedSorts('name','description','categorie','price','stock_quantity')
             ->paginate($paginate);
+            Log::info("User requested products with filters paginate".$paginate);
             return response()->json($products);
         }catch (InvalidFilterQuery $exception) {
+            Log::info("User requested products with filters not valid, bad request");
             return response()->json([
                 'message' => 'Requested filter are not allowed',
                 'error_filter' => $exception->unknownFilters,
                 'available_filter'=> $exception->allowedFilters
             ], 400);
         }catch (InvalidSortQuery $exception) {
+            Log::info("User requested products with sort not valid, bad request");
             return response()->json([
                 'message' => 'Requested sort are not allowed',
                 'error_sort'=> $exception->unknownSorts,

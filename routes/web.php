@@ -14,5 +14,6 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
+    throw new Exception("Error Processing Request");
     return view('welcome');
 });

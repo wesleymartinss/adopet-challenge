@@ -4,6 +4,7 @@ namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
+use Log;
 
 class Handler extends ExceptionHandler
 {
@@ -36,7 +37,11 @@ class Handler extends ExceptionHandler
      */
     public function report(Throwable $exception)
     {
-        parent::report($exception);
+        Log::error("An error ocurred: ".$exception->getMessage()." with code: "
+            .$exception->getCode(). " on line: ".$exception->getLine()." file: ".$exception->getFile());
+            dd($exception);
+
+            parent::report($exception);
     }
 
     /**

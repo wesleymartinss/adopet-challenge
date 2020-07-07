@@ -7,6 +7,8 @@ use App\User;
 use Validator;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\ShowUserRequest;
+use App\Util\Pattern;
+use Log;
 
 
 
@@ -20,7 +22,9 @@ class UserController extends Controller
     public function index()
     {
         //
-        $users = User::all();
+        $paginate = $request->header('paginate') ?? 5;
+        $users = User::paginate($paginate);
+        Log::info("User requested all users  with paginate".$paginate);
         return response()->json($users);
     }
     /**
@@ -35,6 +39,7 @@ class UserController extends Controller
                     $request->validated(),
                     ['password' => bcrypt($request->password)]
                 ));
+        Log::info("Created a new user ID".$user->id);
         return response()->json([
             'message' => 'Successfully registered',
             'id' => $user->id
@@ -43,48 +48,16 @@ class UserController extends Controller
 
     public function show(Request $request)
     {
-        $UUIDv4 = '/^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i';
-        if(preg_match($UUIDv4, $request->header('x-user-id'))){
+        if(Pattern::verifyValidUUID($request->header('x-user-id'))){
             $user = User::find($request->header('x-user-id'));
+            Log::info("Displayed a user ID".$user->id);
             return response()->json($user);
         }else{
+            Log::info("User requested a user with invalid UUID, bad request");
             return response()->json(['message' => 'UUID not valid'], 400);
         }
 
 
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
 }
