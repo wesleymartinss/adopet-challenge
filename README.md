@@ -468,17 +468,27 @@ Ou para ordenacao
 }
 ```
 
+## Logs
+
+Os logs da aplicação estão sendo salvos em `storage\logs\` por padrão do laravel. Somente as ações do usuário conforme solicitado, estão sendo gravadas pela aplicação. Assim como, possiveis erros que venham disparar e sejam capturados pelo sistema.
+
 ## PHP
 
 -   `laravel` - Web framework
 -   `eloquent` - ORM para fazer o mapeamento dos models
 -   `composer` - Gerenciador de pacotes do PHP
+-   `laravel-eloquent-uuid` - Pacote responsável por fazer o mapeamento de chave primaria e ID e auto generate para UUID
+-   `jwt-auth` - Pacote responsável por gerenciar todas as dependencias relacionados a autenticação
+-   `spatie-query-builder``- Pacote utilizado para lidar com queryparams e criar os filtros e ordenações
 
 # Deploy
 
 O deploy foi feito utilizando o [Google Cloud Platform](https://cloud.google.com/) com Docker e [CoreOS](https://coreos.com/)
 
-# Links
+# Referencias
 
 -   https://github.com/goldspecdigital/laravel-eloquent-uuid
 -   https://github.com/tymondesigns/jwt-auth
+-   https://github.com/spatie/laravel-query-builder
+-   https://laravel.com/docs/7.x
+-   https://getcomposer.org/
