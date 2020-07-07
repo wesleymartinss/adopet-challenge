@@ -45,7 +45,7 @@ class ProductController extends Controller
             $product = Product::find($request->header('x-user-id'));
             if(!isset($product)){
                 Log::info("User requested product UUID".$request->header('x-product-id')." doenst exist");
-                return response()->json(['message' => 'Passed product doenst exist, any resource was found'], 400);
+                return response()->json(['error' => 'Passed product doenst exist, any resource was found'], 400);
             }
             Log::info("User resquested a product with ID".$product->id);
             return response()->json($product);
@@ -60,7 +60,7 @@ class ProductController extends Controller
         $product = Product::find($request->validated()['id']);
         if(!isset($product)){
             Log::info("User requested product UUID".$request->validated()['id']." doenst exist");
-            return response()->json(['message' => 'Passed product doenst exist, any resource was updated'], 400);
+            return response()->json(['error' => 'Passed product doenst exist, any resource was updated'], 400);
         }
         $product->update($request->validated());
         Log::info("User updated product with UUID".$product->id);
