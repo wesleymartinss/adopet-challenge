@@ -15,6 +15,7 @@ class Handler extends ExceptionHandler
      */
     protected $dontReport = [
         //
+        Illuminate\Auth\AuthenticationException::class
     ];
 
     /**
@@ -39,8 +40,6 @@ class Handler extends ExceptionHandler
     {
         Log::error("An error ocurred: ".$exception->getMessage()." with code: "
             .$exception->getCode(). " on line: ".$exception->getLine()." file: ".$exception->getFile());
-            dd($exception);
-
             parent::report($exception);
     }
 

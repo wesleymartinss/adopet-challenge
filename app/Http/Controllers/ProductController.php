@@ -11,6 +11,7 @@ use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\Exceptions\InvalidFilterQuery;
 use Spatie\QueryBuilder\Exceptions\InvalidSortQuery;
 use App\Util\Pattern;
+use Log;
 
 class ProductController extends Controller
 {
